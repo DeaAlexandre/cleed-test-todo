@@ -1,23 +1,26 @@
 import { createStore } from 'vuex';
+import axios from 'axios';
 import { Todo } from '@/models/Todo';
 
 interface State {
   todos: Todo[];
-  nextTodoId: number;
 }
 
 export default createStore<State>({
   state: {
     todos: [] as Todo[],
-    nextTodoId: 1,
   },
   getters: {
     allTodos: (state: State) => state.todos,
+    completedTodos: (state: State) => state.todos.filter(todo => todo.completed),
+    activeTodos: (state: State) => state.todos.filter(todo => !todo.completed),
   },
   mutations: {
+    setTodos: (state: State, todos: Todo[]) => {
+      state.todos = todos;
+    },
     addTodo: (state: State, todo: Todo) => {
       state.todos.push(todo);
-      state.nextTodoId++;
     },
     toggleTodo: (state: State, todoId: number) => {
       const todo = state.todos.find(t => t.id === todoId);
@@ -36,21 +39,30 @@ export default createStore<State>({
     },
   },
   actions: {
-    addTodo: ({ commit, state }, text: string) => {
-      const newTodo: Todo = {
-        id: state.nextTodoId,
-        text,
-        completed: false,
-      };
-      commit('addTodo', newTodo);
+    async fetchTodos({ commit }) {
+      const response = await axios.get('http://localhost:3052/api/todos');
+      commit('setTodos', response.data.data);
     },
-    toggleTodo: ({ commit }, todoId: number) => {
-      commit('toggleTodo', todoId);
+    async addTodo({ commit }, text: string) {
+      const response = await axios.post('http://localhost:3052/api/todos', { text });
+      commit('addTodo', response.data.data);
     },
-    removeTodo: ({ commit }, todoId: number) => {
+    async toggleTodo({ commit, state }, todoId: number) {
+      const todo = state.todos.find(t => t.id === todoId);
+      if (todo) {
+        const response = await axios.put(`http://localhost:3052/api/todos/${todoId}`, {
+          ...todo,
+          completed: !todo.completed,
+        });
+        commit('toggleTodo', todoId);
+      }
+    },
+    async removeTodo({ commit }, todoId: number) {
+      await axios.delete(`http://localhost:3052/api/todos/${todoId}`);
       commit('removeTodo', todoId);
     },
-    editTodo: ({ commit }, payload: { id: number, text: string }) => {
+    async editTodo({ commit }, payload: { id: number, text: string }) {
+      await axios.put(`http://localhost:3052/api/todos/${payload.id}`, payload);
       commit('editTodo', payload);
     },
   },
