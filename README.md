@@ -16,8 +16,3 @@ node server.js
 ```
 npm run serve
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
