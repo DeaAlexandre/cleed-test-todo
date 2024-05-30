@@ -1,7 +1,9 @@
 <template>
   <div id="app">
-    <router-link to="/">Home</router-link>
-    <router-link to="/add">Add Todo</router-link>
+    <nav>
+      <router-link to="/" class="nav-button">Home</router-link>
+      <router-link to="/add" class="nav-button">Add Todo</router-link>
+    </nav>
     <router-view></router-view>
   </div>
 </template>
@@ -22,5 +24,25 @@ export default defineComponent({
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+nav {
+  margin-bottom: 20px;
+}
+
+.nav-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  text-decoration: none;
+  margin: 0 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.nav-button:hover {
+  background-color: #2980b9;
 }
 </style>
