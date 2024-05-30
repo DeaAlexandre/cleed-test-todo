@@ -1,24 +1,23 @@
 # vue-todo-list
 
-## Project setup
+## 1- Project setup (Linux)
 ```
-npm install
+chmod +x install.sh
+./install.sh
 ```
 
-### Compiles and hot-reloads for development
+### 2- start database
+```
+cd backend
+node server.js
+```
+
+### -3 start frontend
 ```
 npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
 ```
 
 ### Lints and fixes files
 ```
 npm run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
